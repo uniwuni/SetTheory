@@ -474,6 +474,39 @@ theorem union_sdiff_eq_union_sdiff_inter_sdiff {a b c: set}: a ∪ (b \ c) = (a 
   ext x; simp only [mem_sdiff_iff, mem_inter_iff, and_congr_right_iff, iff_and_self, and_imp]
   exact fun a _ _ => a
 
+@[simp] theorem pair_subset_iff {a b x: set}: pair a b ⊆ x ↔ (a ∈ x ∧ b ∈ x) := by
+  apply Iff.intro
+  · exact fun h => ⟨h a mem_pair_left, h b mem_pair_right⟩
+  · rintro ⟨ha, hb⟩ w hw
+    simp only [mem_pair_iff'] at hw
+    rcases hw with hw|hw
+    · rwa[hw]
+    · rwa[hw]
 
+@[simp] theorem union_subset_iff {a b c: set}: a ∪ b ⊆ c ↔ (a ⊆ c ∧ b ⊆ c) := by
+  apply Iff.intro
+  · intro h
+    apply And.intro
+    · intro x hx
+      apply h x
+      simp only [mem_union_iff, hx, true_or]
+    · intro x hx
+      apply h x
+      simp only [mem_union_iff, hx, or_true]
+  · rintro ⟨ha,hb⟩ x y
+    simp only [mem_union_iff] at y
+    rcases y with y|y
+    · exact ha _ y
+    · exact hb _ y
+
+@[simp] theorem subset_inter_iff {a b c: set}: a ⊆ b ∩ c ↔ (a ⊆ b ∧ a ⊆ c) := by
+  apply Iff.intro
+  · intro h
+    apply And.intro
+    · apply Subset.trans h left_inter_subset
+    · apply Subset.trans h right_inter_subset
+  · rintro ⟨hb, hc⟩ x hx
+    simp only [mem_inter_iff]
+    exact ⟨hb _ hx, hc _ hx⟩
 -- TODO 5.22 (requires strong induction)
 end ZFC
